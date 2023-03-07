@@ -23,9 +23,13 @@ size = 200
 
 g = 9.81 * size  # м / с ^ 2
 l = 1 * size  # м
-phi0 = pi / 2  # radians
-beta = 0.08  # 1 / c
+phi = pi - 0.1  # radians
+beta = 0.1  # 1 / c
+q = 0
+
 w = ((g / l) - beta ** 2) ** 0.5  # 1 / c
+wcenter = 5
+acenter = 50
 dt = 1 / 500  # c
 t = 0
 
@@ -49,11 +53,14 @@ while running:
             flag = False if flag else True
 
     if flag:
-        t += dt
+        q -= dt * (g / l * sin(phi) + 2 * beta * q)
 
-        phi = phi0 * e ** (-beta * t) * cos(w * t)
-        x = -l * sin(phi) + width / 2
+        phi += dt * q
+
+        x = l * sin(phi) + width / 2
         y = l * cos(phi) + height / 2
+
+        t += dt
 
         canvas.change(screen, (x, y), (300, 300))
         text = font.render(f't = {round(t, 3)} c', True, 'white', 'black')

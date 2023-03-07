@@ -23,9 +23,11 @@ size = 200
 
 g = 9.81 * size  # м / с ^ 2
 l = 1 * size  # м
-phi0 = pi / 2  # radians
-beta = 0.08  # 1 / c
+phi = pi / 2 # radians
+beta = 0  # 1 / c
 w = ((g / l) - beta ** 2) ** 0.5  # 1 / c
+wcenter = 5
+acenter = 50
 dt = 1 / 500  # c
 t = 0
 
@@ -49,13 +51,17 @@ while running:
             flag = False if flag else True
 
     if flag:
+        x_center = width / 2
+        y_center = height / 2 + acenter * cos(wcenter * t)
+
+        x = -l * sin(phi) + x_center
+        y = l * cos(phi) + y_center
         t += dt
+        phi += w * dt
+        b = -(acenter * wcenter ** 2 * cos(wcenter * t) + g) * sin(phi) / l
+        w += b * dt
 
-        phi = phi0 * e ** (-beta * t) * cos(w * t)
-        x = -l * sin(phi) + width / 2
-        y = l * cos(phi) + height / 2
-
-        canvas.change(screen, (x, y), (300, 300))
+        canvas.change(screen, (x, y), (x_center, y_center))
         text = font.render(f't = {round(t, 3)} c', True, 'white', 'black')
         screen.blit(text, textRect)
         pygame.display.flip()
